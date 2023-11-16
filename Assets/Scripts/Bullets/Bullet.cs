@@ -7,15 +7,13 @@ namespace Bullets
     {
         public event Action<Bullet> OnCollisionEntered;
 
-        [NonSerialized] public bool IsPlayer;
-        [NonSerialized] public int Damage;
+        [SerializeField] private new Rigidbody2D rigidbody2D;
 
-        [SerializeField]
-        private new Rigidbody2D rigidbody2D;
-
-        [SerializeField]
-        private SpriteRenderer spriteRenderer;
-
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        
+        public bool IsPlayer { get; set; }
+        public int Damage { get; set; }
+        
         private void OnCollisionEnter2D(Collision2D collision)
         {
             BulletUtils.DealDamage(this, collision.gameObject);

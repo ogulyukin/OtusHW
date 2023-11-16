@@ -1,7 +1,5 @@
-using Bullets;
 using Components;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Enemy.Agents
 {
@@ -9,7 +7,6 @@ namespace Enemy.Agents
     {
         public delegate void FireHandler(GameObject shooter);
         
-        [FormerlySerializedAs("weaponComponent")] [SerializeField] private Weapon weapon;
         [SerializeField] private float countdown;
         [SerializeField] private MoveComponent moveComponent;
 
