@@ -1,5 +1,6 @@
 namespace Common
 {
+    //It is used in BulletConfig scriptable object
     public enum PhysicsLayer
     {
         CHARACTER = 10,

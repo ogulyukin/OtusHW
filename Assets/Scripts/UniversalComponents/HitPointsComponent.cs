@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-namespace Components
+namespace UniversalComponents
 {
     public sealed class HitPointsComponent : MonoBehaviour
     {
-        public event Action<GameObject> HpEmpty;
+        public event Action<GameObject> OnDeath;
         
         [SerializeField] private int hitPoints;
         
@@ -14,7 +14,7 @@ namespace Components
             hitPoints -= damage;
             if (hitPoints <= 0)
             {
-                HpEmpty?.Invoke(gameObject);
+                OnDeath?.Invoke(gameObject);
             }
         }
     }

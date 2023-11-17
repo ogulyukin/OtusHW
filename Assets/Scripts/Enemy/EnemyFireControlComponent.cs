@@ -1,29 +1,30 @@
 using Bullets;
-using Components;
 using Enemy.Agents;
 using UnityEngine;
+using UniversalComponents;
 
 namespace Enemy
 {
-    public class EnemyFireControl : MonoBehaviour, IFireControl
+    [RequireComponent(typeof(WeaponComponent))]
+    public sealed class EnemyFireControlComponent : MonoBehaviour, IFireControl
     {
-        
+        [SerializeField] private EnemyAttackAgent enemyAttackAgent;
         private BulletSystem bulletSystem;
         private GameObject target;
 
         private void Start()
         {
-            bulletSystem = GameObject.FindWithTag("BulletSystem").GetComponent<BulletSystem>();
+            bulletSystem = FindObjectOfType<BulletSystem>();
         }
 
         private void OnEnable()
         {
-            GetComponent<EnemyAgent>().OnFire += OnFire;
+            enemyAttackAgent.OnFire += OnFire;
         }
 
         private void OnDisable()
         {
-            GetComponent<EnemyAgent>().OnFire -= OnFire;
+            enemyAttackAgent.OnFire -= OnFire;
         }
 
         public void SetTarget(GameObject newTarget)
@@ -33,7 +34,7 @@ namespace Enemy
 
         public Vector2 GetFireDirection()
         {
-            var startPosition = GetComponent<Weapon>().WeaponPosition;
+            var startPosition = GetComponent<WeaponComponent>().WeaponPosition;
             var position = target.transform.position;
             var vector = (Vector2) position - startPosition;
             return vector.normalized;
@@ -41,7 +42,7 @@ namespace Enemy
         
         private void OnFire(GameObject enemy)
         {
-            bulletSystem.FlyBullet(false, enemy);
+            bulletSystem.CreateBullet(false, enemy);
         }
     }
 }

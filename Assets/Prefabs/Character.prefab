@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3926786964091724597}
   - component: {fileID: 3926786963732877808}
   - component: {fileID: -8372693531996569085}
+  - component: {fileID: 8969368399156979033}
   m_Layer: 10
   m_Name: Character
   m_TagString: Untagged
@@ -195,6 +196,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c23701f29c6c50469747487b0d16d9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletSystem: {fileID: 0}
+--- !u!114 &8969368399156979033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 809540891661548873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04139a330d812fa4d99a59f35735676d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveComponent: {fileID: 3926786963732877808}
+  characterFireControlComponent: {fileID: -8372693531996569085}
+  inputManager: {fileID: 0}
 --- !u!1 &3926786963072264211
 GameObject:
   m_ObjectHideFlags: 0

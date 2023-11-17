@@ -11,41 +11,44 @@ namespace Enemy
 
         [SerializeField] private GameObject character;
 
-        [SerializeField] private Transform worldTransform;
+        [SerializeField] private Transform spawnPointTransform;
 
         [Header("Pool")]
         [SerializeField] private Transform container;
 
-        [SerializeField] private GameObject prefab;
+        [SerializeField] private GameObject enemyPrefab;
+
+        [SerializeField] private int enemyQuantity = 7;
 
         private readonly Queue<GameObject> enemyPool = new();
         
         private void Awake()
         {
-            for (var i = 0; i < 7; i++)
+            for (var i = 0; i < enemyQuantity; i++)
             {
-                var enemy = Instantiate(prefab, container);
+                var enemy = Instantiate(enemyPrefab, container);
                 enemyPool.Enqueue(enemy);
             }
         }
 
-        public GameObject SpawnEnemy()
+        public bool TrySpawnEnemy(out GameObject enemy)
         {
-            if (!enemyPool.TryDequeue(out var enemy))
+            if (!enemyPool.TryDequeue(out enemy))
             {
-                return null;
+                enemy = null;
+                return false;
             }
 
-            enemy.transform.SetParent(worldTransform);
+            enemy.transform.SetParent(spawnPointTransform);
 
             var spawnPosition = enemyPositions.RandomSpawnPosition();
             enemy.transform.position = spawnPosition.position;
             
             var attackPosition = enemyPositions.RandomAttackPosition();
-            enemy.GetComponent<EnemyAgent>().SetDestination(attackPosition.position);
+            enemy.GetComponent<EnemyMoveAgent>().SetDestination(attackPosition.position);
 
-            enemy.GetComponent<EnemyFireControl>().SetTarget(character);
-            return enemy;
+            enemy.GetComponent<EnemyFireControlComponent>().SetTarget(character);
+            return true;
         }
 
         public void UnSpawnEnemy(GameObject enemy)

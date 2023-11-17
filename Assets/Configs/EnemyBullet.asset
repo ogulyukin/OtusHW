@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f607d62c36cf429b98fd5e0d29773f70, type: 3}
   m_Name: EnemyBullet
   m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 201757604187811891, guid: 5fe72886874b4e445b06cf777ca4920d,
+    type: 3}
   physicsLayer: 13
   color: {r: 1, g: 0, b: 0.11302805, a: 1}
   damage: 1

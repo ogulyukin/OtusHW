@@ -1,52 +1,37 @@
-using Character;
-using Components;
+using System;
 using UnityEngine;
 
 namespace Input
 {
+    public enum UserCommands
+    {
+        Left,
+        Right,
+        Stop,
+        Fire
+    }
     public sealed class InputManager : MonoBehaviour
     {
-        [SerializeField] private GameObject character;
+        public Action<UserCommands> OnUserCommand;
         
-        private float horizontalDirection;
-        private bool fireRequired;
-        private MoveComponent moveComponent;
-        private CharacterFireControl characterFireControl;
-
-        private void Start()
-        {
-            moveComponent = character.GetComponent<MoveComponent>();
-            characterFireControl = character.GetComponent<CharacterFireControl>();
-        }
-
         private void Update()
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
             {
-                fireRequired = true;
+                OnUserCommand?.Invoke(UserCommands.Fire);
             }
 
             if (UnityEngine.Input.GetKey(KeyCode.LeftArrow))
             {
-                horizontalDirection = -1;
+                OnUserCommand?.Invoke(UserCommands.Left);
             }
             else if (UnityEngine.Input.GetKey(KeyCode.RightArrow))
             {
-                horizontalDirection = 1;
+                OnUserCommand?.Invoke(UserCommands.Right);
             }
             else
             {
-                horizontalDirection = 0;
-            }
-        }
-        
-        private void FixedUpdate()
-        {
-            moveComponent.MoveByRigidbodyVelocity(new Vector2(horizontalDirection, 0) * Time.fixedDeltaTime);
-            if (fireRequired)
-            {
-                fireRequired = false;
-                characterFireControl.OnFlyBullet();
+                OnUserCommand?.Invoke(UserCommands.Stop);
             }
         }
     }

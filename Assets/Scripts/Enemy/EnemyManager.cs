@@ -1,7 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using Components;
+using GameManager;
 using UnityEngine;
+using UniversalComponents;
 
 namespace Enemy
 {
@@ -9,32 +9,38 @@ namespace Enemy
     {
         [SerializeField] private EnemyPool enemyPool;
 
-        private readonly HashSet<GameObject> activeEnemies = new();
+        [SerializeField] private EndGameManager endGameManager;
+
+        [SerializeField] private float spawnTimeout = 1f;
+        
+
+        private bool isGameEnded;
 
         private IEnumerator Start()
         {
-            while (true)
+            endGameManager.OnGameOver += GameOver;
+            
+            while (!isGameEnded)
             {
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(spawnTimeout);
                 
-                var enemy = enemyPool.SpawnEnemy();
-                if (enemy != null)
+                
+                if (enemyPool.TrySpawnEnemy(out var enemy))
                 {
-                    if (activeEnemies.Add(enemy))
-                    {
-                        enemy.GetComponent<HitPointsComponent>().HpEmpty += OnDestroyed;
-                    }    
+                    enemy.GetComponent<HitPointsComponent>().OnDeath += OnDestroyed;
                 }
             }
         }
 
         private void OnDestroyed(GameObject enemy)
         {
-            if (activeEnemies.Remove(enemy))
-            {
-                enemy.GetComponent<HitPointsComponent>().HpEmpty -= OnDestroyed;
-                enemyPool.UnSpawnEnemy(enemy);
-            }
+            enemy.GetComponent<HitPointsComponent>().OnDeath -= OnDestroyed;
+            enemyPool.UnSpawnEnemy(enemy);
+        }
+
+        private void GameOver()
+        {
+            isGameEnded = true;
         }
         
     }

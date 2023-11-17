@@ -1,10 +1,10 @@
 using Bullets;
-using Components;
 using UnityEngine;
+using UniversalComponents;
 
 namespace Character
 {
-    public class CharacterFireControl : MonoBehaviour, IFireControl
+    public sealed class CharacterFireControlComponent : MonoBehaviour, IFireControl
     {
         [SerializeField] private BulletSystem bulletSystem;
         public Vector2 GetFireDirection()
@@ -12,9 +12,9 @@ namespace Character
             return Vector2.up;
         }
         
-        public void OnFlyBullet()
+        public void FireBullet()
         {
-            bulletSystem.FlyBullet(true, gameObject);
+            bulletSystem.CreateBullet(true, gameObject);
         }
     }
 }

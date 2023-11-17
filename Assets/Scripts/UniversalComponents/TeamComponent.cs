@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Components
+namespace UniversalComponents
 {
     public sealed class TeamComponent : MonoBehaviour
     {
