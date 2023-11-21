@@ -1,4 +1,4 @@
-using Level;
+using System;
 using UnityEngine;
 using UniversalComponents;
 
@@ -6,27 +6,19 @@ namespace Bullets
 {
     public sealed class Bullet : MonoBehaviour
     {
+        public event Action<Bullet> OnCollisionEntered;
+        
         [SerializeField] private new Rigidbody2D rigidbody2D;
 
         [SerializeField] private SpriteRenderer spriteRenderer;
 
         public bool IsPlayer { get; set; }
         public int Damage { get; set; }
-        
-        private LevelBounds levelBounds;
-        
-        private void FixedUpdate()
-        {
-            if (!levelBounds.InBounds(transform.position))
-            { 
-                Destroy(gameObject);
-            }
-        }
-        
+
         private void OnCollisionEnter2D(Collision2D collision)
         {
             DealDamage(collision.gameObject);
-            Destroy(gameObject);
+            OnCollisionEntered?.Invoke(this);
         }
 
         public void SetVelocity(Vector2 velocity)
@@ -49,11 +41,6 @@ namespace Bullets
             spriteRenderer.color = color;
         }
 
-        public void SetLevelBounds(LevelBounds bounds)
-        {
-            levelBounds = bounds;
-        }
-        
         private void DealDamage(GameObject other)
         {
             if (!other.TryGetComponent(out TeamComponent team) || IsPlayer == team.IsPlayer)

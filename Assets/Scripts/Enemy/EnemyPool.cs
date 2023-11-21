@@ -24,11 +24,7 @@ namespace Enemy
         
         private void Awake()
         {
-            for (var i = 0; i < enemyQuantity; i++)
-            {
-                var enemy = Instantiate(enemyPrefab, container);
-                enemyPool.Enqueue(enemy);
-            }
+            EnemyPoolGeneration();
         }
 
         public bool TrySpawnEnemy(out GameObject enemy)
@@ -45,16 +41,31 @@ namespace Enemy
             enemy.transform.position = spawnPosition.position;
             
             var attackPosition = enemyPositions.RandomAttackPosition();
-            enemy.GetComponent<EnemyMoveAgent>().SetDestination(attackPosition.position);
-
+            var enemyMoveAgent = enemy.GetComponent<EnemyMoveAgent>();
+            enemyMoveAgent.SetDestination(attackPosition.position);
+            enemyMoveAgent.StartMoveActivity();
+            var enemyAttackAgent = enemy.GetComponent<EnemyAttackAgent>();
+            enemyAttackAgent.StartOffensiveActivity();
             enemy.GetComponent<EnemyFireControlComponent>().SetTarget(character);
             return true;
         }
 
         public void UnSpawnEnemy(GameObject enemy)
         {
+            enemy.GetComponent<EnemyMoveAgent>().IsActive = false;
+            enemy.GetComponent<EnemyAttackAgent>().IsActive = false;
             enemy.transform.SetParent(container);
             enemyPool.Enqueue(enemy);
         }
+
+        private void EnemyPoolGeneration()
+        {
+            for (var i = 0; i < enemyQuantity; i++)
+            {
+                var enemy = Instantiate(enemyPrefab, container);
+                enemyPool.Enqueue(enemy);
+            }
+        }
+        
     }
 }

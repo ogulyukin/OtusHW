@@ -210,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05fad3ac534a35e498995c96717918f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countdown: 3
+  fireTimeout: 3
   moveAgent: {fileID: 6896809305229427933}
 --- !u!114 &-6765717610886888577
 MonoBehaviour:

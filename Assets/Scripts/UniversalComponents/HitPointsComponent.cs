@@ -8,14 +8,20 @@ namespace UniversalComponents
         public event Action<GameObject> OnDeath;
         
         [SerializeField] private int hitPoints;
-        
+        private int currentHitPoints;
+
         public void TakeDamage(int damage)
         {
-            hitPoints -= damage;
-            if (hitPoints <= 0)
+            currentHitPoints -= damage;
+            if (currentHitPoints <= 0)
             {
                 OnDeath?.Invoke(gameObject);
             }
+        }
+
+        public void RestoreHitPoints()
+        {
+            currentHitPoints = hitPoints;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UniversalComponents;
 
@@ -7,12 +8,22 @@ namespace Enemy.Agents
     {
         [SerializeField] private MoveComponent moveComponent;
         public bool IsReached { get; private set; }
-        
+        public bool IsActive { get; set; }
         private Vector2 destination;
+        private const float MoveRate = 0.05f;
 
-        private void FixedUpdate()
+        public void StartMoveActivity()
         {
+            IsActive = true;
+            StartCoroutine(MoveActivity());
+        }
+
+        private IEnumerator MoveActivity()
+        {
+            if(!IsActive) yield break;
+            yield return new WaitForSeconds(MoveRate);
             Move();
+            yield return MoveActivity();
         }
 
         public void SetDestination(Vector2 endPoint)
