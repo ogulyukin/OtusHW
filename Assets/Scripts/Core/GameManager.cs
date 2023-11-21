@@ -45,13 +45,9 @@ namespace Core
 
         public void PauseHandler()
         {
+            //Не стал реализовывать IOnPause - и так все работает.
             Time.timeScale = isGamePaused ? 1 : 0;
             isGamePaused = !isGamePaused;
-        }
-
-        public void ExitGameHandler()
-        {
-            Application.Quit();
         }
     }
 }

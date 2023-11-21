@@ -4,13 +4,12 @@ using UnityEngine;
 
 namespace Enemy.Agents
 {
-    public class EnemyAttackAgent : MonoBehaviour
+    public sealed class EnemyAttackAgent : MonoBehaviour
     {
         [SerializeField] private float fireTimeout = 3;
         [SerializeField] private EnemyMoveAgent moveAgent;
         public Action<GameObject> OnFire;
         private float currentTime;
-        private const float FireRate = 0.5f;
         public bool IsActive { get; set; }
 
         public void StartOffensiveActivity()
@@ -18,11 +17,11 @@ namespace Enemy.Agents
             IsActive = true;
             StartCoroutine(OffensiveActivity());
         }
-        
-        public IEnumerator OffensiveActivity()
+
+        private IEnumerator OffensiveActivity()
         {
             if(!IsActive) yield break;
-            yield return new WaitForSeconds(FireRate);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
             TryAttack();
             yield return OffensiveActivity();
         }
@@ -30,7 +29,7 @@ namespace Enemy.Agents
         private void TryAttack()
         {
             if(!moveAgent.IsReached) return;
-            currentTime -= FireRate;
+            currentTime -= Time.fixedDeltaTime;
             if (currentTime <= 0)
             {
                 OnFire?.Invoke(gameObject);

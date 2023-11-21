@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UI
 {
-    public class TextSpawner : MonoBehaviour
+    public sealed class TextSpawner : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private List<string> startText;

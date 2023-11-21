@@ -12,8 +12,7 @@ namespace Level
         [SerializeField] public float endPositionY;
 
         [SerializeField] public float movingSpeedY;
-
-        [SerializeField] public float backgroundMoveTimeout = 0.1f;
+        
 
         private bool proceedBackgroundMove;
 
@@ -24,7 +23,7 @@ namespace Level
 
         private IEnumerator UpdateBackground()
         {
-            yield return new WaitForSeconds(backgroundMoveTimeout);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
             if(!proceedBackgroundMove) yield break;
             var position = transform.position;
             if (position.y <= endPositionY)

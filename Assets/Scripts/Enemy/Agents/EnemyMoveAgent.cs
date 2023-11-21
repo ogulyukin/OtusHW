@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 using UniversalComponents;
 
@@ -10,7 +11,6 @@ namespace Enemy.Agents
         public bool IsReached { get; private set; }
         public bool IsActive { get; set; }
         private Vector2 destination;
-        private const float MoveRate = 0.05f;
 
         public void StartMoveActivity()
         {
@@ -21,7 +21,7 @@ namespace Enemy.Agents
         private IEnumerator MoveActivity()
         {
             if(!IsActive) yield break;
-            yield return new WaitForSeconds(MoveRate);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
             Move();
             yield return MoveActivity();
         }

@@ -4,7 +4,7 @@ using UniversalComponents;
 
 namespace Character
 {
-    public class CharacterInputController : MonoBehaviour
+    public sealed class CharacterInputController : MonoBehaviour
     {
         [SerializeField] private MoveComponent moveComponent;
         [SerializeField] private CharacterFireControlComponent characterFireControlComponent;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UI
 {
-    public class StartButtonHandler : MonoBehaviour
+    public sealed class StartButtonHandler : MonoBehaviour
     {
         [SerializeField] private GameManager gameManager;
         
