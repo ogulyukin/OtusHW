@@ -1,4 +1,5 @@
 using System;
+using Core;
 using UnityEngine;
 
 namespace Input
@@ -10,11 +11,11 @@ namespace Input
         Stop,
         Fire
     }
-    public sealed class InputManager : MonoBehaviour
+    public sealed class InputManager : MonoBehaviour, IOnUpdate
     {
         public Action<UserCommands> OnUserCommand;
-        
-        private void Update()
+
+        public void UpdateMethod()
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
             {

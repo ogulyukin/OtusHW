@@ -5,11 +5,11 @@ namespace UI
 {
     public sealed class StartButtonHandler : MonoBehaviour
     {
-        [SerializeField] private GameManager gameManager;
+        [SerializeField] private GameLauncher gameLauncher;
         
         public void OnStartButtonClick()
         {
-            var _ = gameManager.StartGame();
+            var _ =gameLauncher.LaunchGame();
         }
     }
 }

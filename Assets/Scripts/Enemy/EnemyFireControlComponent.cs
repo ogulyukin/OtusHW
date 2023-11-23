@@ -9,12 +9,12 @@ namespace Enemy
     public sealed class EnemyFireControlComponent : MonoBehaviour, IFireControl
     {
         [SerializeField] private EnemyAttackAgent enemyAttackAgent;
-        private BulletSystem bulletSystem;
+        private BulletManager bulletManager;
         private GameObject target;
 
         private void Start()
         {
-            bulletSystem = FindObjectOfType<BulletSystem>();
+            bulletManager = FindObjectOfType<BulletManager>();
         }
 
         private void OnEnable()
@@ -42,7 +42,7 @@ namespace Enemy
         
         private void OnFire(GameObject enemy)
         {
-            bulletSystem.CreateBullet(false, enemy);
+            bulletManager.CreateBullet(false, enemy);
         }
     }
 }

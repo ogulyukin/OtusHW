@@ -1,51 +1,41 @@
-using System.Threading.Tasks;
-using UI;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core
 {
     public sealed class GameManager : MonoBehaviour
     {
-        [SerializeField] private GameObject mainMenuPanel;
-        [SerializeField] private GameObject pauseButton;
-        [SerializeField] private TextSpawner startTextSpawn;
-        
-        private bool isGamePaused;
-        private EventsProvider[] gameActions;
+        public List<IOnGameStarted> OnGameStarted { get; private set; }
+        public List<IOnGameFinished> OnGameFinished { get; private set; }
 
+        public bool isGamePaused;
+        public bool isGameStarted;
         private void Awake()
         {
-            gameActions = FindObjectsOfType<EventsProvider>();
+            OnGameFinished = new List<IOnGameFinished>();
+            OnGameStarted = new List<IOnGameStarted>();
         }
 
-        public async Task StartGame()
+        public void StartGame()
         {
-            Time.timeScale = 1;
-            mainMenuPanel.SetActive(false);
-            await startTextSpawn.ActivateText(true);
-            await startTextSpawn.ActivateText(false);
-            pauseButton.SetActive(true);
-            for (int i = 0; i < gameActions.Length; i++)
+            foreach (var gameStart in OnGameStarted)
             {
-                gameActions[i].StartGame();
+                gameStart.GameStarted();
             }
+            isGameStarted = true;
         }
-        
 
         public void FinishGame()
         {
-            for (int i = 0; i < gameActions.Length; i++)
+            foreach (var gameFinished in OnGameFinished)
             {
-                gameActions[i].EndGame();
+                gameFinished.GameFinished();
             }
-            Time.timeScale = 0;
-            mainMenuPanel.SetActive(true);
-            pauseButton.SetActive(false);
+            isGameStarted = false;
         }
 
-        public void PauseHandler()
+        public void PauseGame()
         {
-            //Не стал реализовывать IOnPause - и так все работает.
             Time.timeScale = isGamePaused ? 1 : 0;
             isGamePaused = !isGamePaused;
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Enemy.Agents
@@ -10,23 +9,8 @@ namespace Enemy.Agents
         [SerializeField] private EnemyMoveAgent moveAgent;
         public Action<GameObject> OnFire;
         private float currentTime;
-        public bool IsActive { get; set; }
 
-        public void StartOffensiveActivity()
-        {
-            IsActive = true;
-            StartCoroutine(OffensiveActivity());
-        }
-
-        private IEnumerator OffensiveActivity()
-        {
-            if(!IsActive) yield break;
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
-            TryAttack();
-            yield return OffensiveActivity();
-        }
-
-        private void TryAttack()
+        public void TryAttack()
         {
             if(!moveAgent.IsReached) return;
             currentTime -= Time.fixedDeltaTime;

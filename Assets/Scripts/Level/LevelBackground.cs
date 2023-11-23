@@ -1,10 +1,9 @@
-using System.Collections;
 using Core;
 using UnityEngine;
 
 namespace Level
 {
-    public sealed class LevelBackground : MonoBehaviour, IOnGameStarted, IOnGameFinished
+    public sealed class LevelBackground : MonoBehaviour, IOnGameStarted, IOnGameFinished, IOnFixedUpdate
     {
 
         [SerializeField] public float startPositionY;
@@ -12,19 +11,24 @@ namespace Level
         [SerializeField] public float endPositionY;
 
         [SerializeField] public float movingSpeedY;
-        
-
-        private bool proceedBackgroundMove;
 
         private void Start()
         {
             gameObject.SetActive(false);
         }
 
-        private IEnumerator UpdateBackground()
+        public void GameStarted()
         {
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
-            if(!proceedBackgroundMove) yield break;
+            gameObject.SetActive(true);
+        }
+
+        public void GameFinished()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void FixedUpdateMethod()
+        {
             var position = transform.position;
             if (position.y <= endPositionY)
             {
@@ -32,21 +36,6 @@ namespace Level
             }
 
             transform.position -= new Vector3(position.x, movingSpeedY * Time.fixedDeltaTime, position.z);
-
-            yield return UpdateBackground();
-        }
-
-        public void GameStarted()
-        {
-            proceedBackgroundMove = true;
-            gameObject.SetActive(true);
-            StartCoroutine(UpdateBackground());
-        }
-
-        public void GameFinished()
-        {
-            proceedBackgroundMove = false;
-            gameObject.SetActive(false);
         }
     }
 }

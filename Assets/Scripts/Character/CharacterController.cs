@@ -23,7 +23,6 @@ namespace Character
 
         public void GameStarted()
         {
-            character.SetActive(true);
             character.GetComponent<HitPointsComponent>().RestoreHitPoints();
             character.GetComponent<HitPointsComponent>().OnDeath += OnCharacterDeath;
         }

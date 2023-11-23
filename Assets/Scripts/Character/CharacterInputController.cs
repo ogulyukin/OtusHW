@@ -1,31 +1,18 @@
+using Core;
 using Input;
 using UnityEngine;
 using UniversalComponents;
 
 namespace Character
 {
-    public sealed class CharacterInputController : MonoBehaviour
+    public sealed class CharacterInputController : MonoBehaviour, IOnGameFinished, IOnGameStarted, IOnUpdate
     {
         [SerializeField] private MoveComponent moveComponent;
         [SerializeField] private CharacterFireControlComponent characterFireControlComponent;
         [SerializeField] private InputManager inputManager;
         private UserCommands lastUserCommand = UserCommands.Stop;
         private bool fireRequired;
-
-        private void Start()
-        {
-            inputManager.OnUserCommand += GetNewCommand;
-        }
-
-        private void FixedUpdate()
-        {
-            moveComponent.MoveByRigidbodyVelocity(new Vector2(UserCommandToValue(), 0) * Time.fixedDeltaTime);
-            if (fireRequired)
-            {
-                fireRequired = false;
-                characterFireControlComponent.FireBullet();
-            }
-        }
+        private bool isGameActive;
 
         private void GetNewCommand(UserCommands command)
         {
@@ -47,6 +34,26 @@ namespace Character
                     return 1;
                 default:
                     return 0;
+            }
+        }
+
+        public void GameFinished()
+        {
+            inputManager.OnUserCommand -= GetNewCommand;
+        }
+
+        public void GameStarted()
+        {
+            inputManager.OnUserCommand += GetNewCommand;
+        }
+
+        public void UpdateMethod()
+        {
+            moveComponent.MoveByRigidbodyVelocity(new Vector2(UserCommandToValue(), 0) * Time.fixedDeltaTime);
+            if (fireRequired)
+            {
+                fireRequired = false;
+                characterFireControlComponent.FireBullet();
             }
         }
     }

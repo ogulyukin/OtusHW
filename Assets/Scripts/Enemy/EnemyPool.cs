@@ -19,9 +19,10 @@ namespace Enemy
         [SerializeField] private GameObject enemyPrefab;
 
         [SerializeField] private int enemyQuantity = 7;
+        
 
         private readonly Queue<GameObject> enemyPool = new();
-        
+
         private void Awake()
         {
             EnemyPoolGeneration();
@@ -43,17 +44,12 @@ namespace Enemy
             var attackPosition = enemyPositions.RandomAttackPosition();
             var enemyMoveAgent = enemy.GetComponent<EnemyMoveAgent>();
             enemyMoveAgent.SetDestination(attackPosition.position);
-            enemyMoveAgent.StartMoveActivity();
-            var enemyAttackAgent = enemy.GetComponent<EnemyAttackAgent>();
-            enemyAttackAgent.StartOffensiveActivity();
             enemy.GetComponent<EnemyFireControlComponent>().SetTarget(character);
             return true;
         }
 
         public void UnSpawnEnemy(GameObject enemy)
         {
-            enemy.GetComponent<EnemyMoveAgent>().IsActive = false;
-            enemy.GetComponent<EnemyAttackAgent>().IsActive = false;
             enemy.transform.SetParent(container);
             enemyPool.Enqueue(enemy);
         }
