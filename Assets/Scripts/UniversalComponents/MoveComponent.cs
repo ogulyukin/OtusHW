@@ -2,11 +2,17 @@ using UnityEngine;
 
 namespace UniversalComponents
 {
-    public sealed class MoveComponent : MonoBehaviour
+    public sealed class MoveComponent
     {
-        [SerializeField] private new Rigidbody2D rigidbody2D;
+        private readonly Rigidbody2D rigidbody2D;
 
-        [SerializeField] private float speed = 5.0f;
+        private readonly float speed;
+
+        public MoveComponent(Rigidbody2D rigidbody, float sp)
+        {
+            rigidbody2D = rigidbody;
+            speed = sp;
+        }
         
         public void MoveByRigidbodyVelocity(Vector2 direction)
         {

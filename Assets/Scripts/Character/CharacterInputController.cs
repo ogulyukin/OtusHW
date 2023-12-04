@@ -1,18 +1,29 @@
+using System;
 using Core;
 using Input;
 using UnityEngine;
 using UniversalComponents;
+using Zenject;
 
 namespace Character
 {
-    public sealed class CharacterInputController : MonoBehaviour, IOnGameFinished, IOnGameStarted, IOnUpdate
+    public sealed class CharacterInputController : IOnGameFinished, IOnGameStarted, IInitializable, IDisposable, ITickable
     {
-        [SerializeField] private MoveComponent moveComponent;
-        [SerializeField] private CharacterFireControlComponent characterFireControlComponent;
-        [SerializeField] private InputManager inputManager;
+        private readonly ComponentsStorage componentsStorage;
+        private readonly CharacterFireControlComponent characterFireControlComponent;
+        private readonly InputManager inputManager;
         private UserCommands lastUserCommand = UserCommands.Stop;
+        private readonly GameManager gameManager;
         private bool fireRequired;
-        private bool isGameActive;
+
+        public CharacterInputController(GameManager gManager, CharacterConfig config, CharacterFireControlComponent fireControlComponent, InputManager iManager)
+        {
+            gameManager = gManager;
+            componentsStorage = config.GetComponent<ComponentsStorage>();
+            characterFireControlComponent = fireControlComponent;
+            inputManager = iManager;
+            Debug.Log($"CharacterInputController created {config.gameObject.name}");
+        }
 
         private void GetNewCommand(UserCommands command)
         {
@@ -36,7 +47,16 @@ namespace Character
                     return 0;
             }
         }
-
+        public void Tick()
+        {
+            componentsStorage.GetMoveComponent().MoveByRigidbodyVelocity(new Vector2(UserCommandToValue(), 0) * Time.fixedDeltaTime);
+            if (fireRequired)
+            {
+                fireRequired = false;
+                characterFireControlComponent.FireBullet();
+            }
+        }
+        
         public void GameFinished()
         {
             inputManager.OnUserCommand -= GetNewCommand;
@@ -47,14 +67,17 @@ namespace Character
             inputManager.OnUserCommand += GetNewCommand;
         }
 
-        public void UpdateMethod()
+        public void Initialize()
         {
-            moveComponent.MoveByRigidbodyVelocity(new Vector2(UserCommandToValue(), 0) * Time.fixedDeltaTime);
-            if (fireRequired)
-            {
-                fireRequired = false;
-                characterFireControlComponent.FireBullet();
-            }
+            gameManager.GameStarted += GameStarted;
+            gameManager.GameFinished += GameFinished;
         }
+
+        public void Dispose()
+        {
+            gameManager.GameStarted -= GameStarted;
+            gameManager.GameFinished -= GameFinished;
+        }
+
     }
 }

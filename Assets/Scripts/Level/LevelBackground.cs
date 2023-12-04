@@ -1,9 +1,11 @@
+using System;
 using Core;
 using UnityEngine;
+using Zenject;
 
 namespace Level
 {
-    public sealed class LevelBackground : MonoBehaviour, IOnGameStarted, IOnGameFinished, IOnFixedUpdate
+    public sealed class LevelBackground : MonoBehaviour, IFixedTickable, IInitializable, IDisposable
     {
 
         [SerializeField] public float startPositionY;
@@ -11,6 +13,14 @@ namespace Level
         [SerializeField] public float endPositionY;
 
         [SerializeField] public float movingSpeedY;
+
+        private GameManager gameManager;
+
+        [Inject]
+        private void Construct(GameManager gManager)
+        {
+            gameManager = gManager;
+        }
 
         private void Start()
         {
@@ -27,7 +37,7 @@ namespace Level
             gameObject.SetActive(false);
         }
 
-        public void FixedUpdateMethod()
+        public void FixedTick()
         {
             var position = transform.position;
             if (position.y <= endPositionY)
@@ -36,6 +46,18 @@ namespace Level
             }
 
             transform.position -= new Vector3(position.x, movingSpeedY * Time.fixedDeltaTime, position.z);
+        }
+
+        public void Initialize()
+        {
+            gameManager.GameStarted += GameStarted;
+            gameManager.GameFinished += GameFinished;
+        }
+
+        public void Dispose()
+        {
+            gameManager.GameStarted -= GameStarted;
+            gameManager.GameFinished -= GameFinished;
         }
     }
 }

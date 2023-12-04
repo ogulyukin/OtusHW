@@ -1,43 +1,37 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace Core
 {
-    public sealed class GameManager : MonoBehaviour
+    public sealed class GameManager
     {
-        public List<IOnGameStarted> OnGameStarted { get; private set; }
-        public List<IOnGameFinished> OnGameFinished { get; private set; }
-
-        public bool isGamePaused;
-        public bool isGameStarted;
-        private void Awake()
+        public Action GameStarted;
+        public Action GameFinished;
+        public bool IsGamePaused { get; set; }
+        public GameManager()
         {
-            OnGameFinished = new List<IOnGameFinished>();
-            OnGameStarted = new List<IOnGameStarted>();
+            Debug.Log("GameManager created");
+        }
+
+        ~GameManager()
+        {
+            Debug.Log("GameManager destroyed");    
         }
 
         public void StartGame()
         {
-            foreach (var gameStart in OnGameStarted)
-            {
-                gameStart.GameStarted();
-            }
-            isGameStarted = true;
+            GameStarted?.Invoke();
         }
 
         public void FinishGame()
         {
-            foreach (var gameFinished in OnGameFinished)
-            {
-                gameFinished.GameFinished();
-            }
-            isGameStarted = false;
+            GameFinished?.Invoke();
         }
 
         public void PauseGame()
         {
-            Time.timeScale = isGamePaused ? 1 : 0;
-            isGamePaused = !isGamePaused;
+            Time.timeScale = IsGamePaused ? 1 : 0;
+            IsGamePaused = !IsGamePaused;
         }
     }
 }

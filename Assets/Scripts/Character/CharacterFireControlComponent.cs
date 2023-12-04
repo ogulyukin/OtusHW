@@ -1,15 +1,17 @@
 using Bullets;
 using UnityEngine;
-using UniversalComponents;
 
 namespace Character
 {
-    public sealed class CharacterFireControlComponent : MonoBehaviour, IFireControl
+    public sealed class CharacterFireControlComponent
     {
-        [SerializeField] private BulletManager bulletManager;
-        public Vector2 GetFireDirection()
+        private readonly BulletManager bulletManager;
+        private readonly GameObject gameObject;
+
+        public CharacterFireControlComponent(CharacterConfig character, BulletManager manager)
         {
-            return Vector2.up;
+            bulletManager = manager;
+            gameObject = character.gameObject;
         }
         
         public void FireBullet()

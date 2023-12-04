@@ -3,13 +3,18 @@ using UnityEngine;
 
 namespace UniversalComponents
 {
-    public sealed class HitPointsComponent : MonoBehaviour
+    public sealed class HitPointsComponent
     {
         public event Action<GameObject> OnDeath;
-        
-        [SerializeField] private int hitPoints;
+        private readonly int hitPoints;
         private int currentHitPoints;
+        private readonly GameObject gameObject;
 
+        public HitPointsComponent(int points, GameObject gObject)
+        {
+            hitPoints = points;
+            gameObject = gObject;
+        }
         public void TakeDamage(int damage)
         {
             currentHitPoints -= damage;

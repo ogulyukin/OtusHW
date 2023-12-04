@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using Core;
 using Enemy.Agents;
 using UnityEngine;
+using Zenject;
 
 namespace Enemy
 {
-    public sealed class EnemyUpdateHandler : MonoBehaviour, IOnFixedUpdate
+    public sealed class EnemyUpdateHandler : MonoBehaviour
     {
         public HashSet<GameObject> ActiveEnemies { get; private set; }
         private readonly HashSet<EnemyUpdateAgent> enemyAgents = new();
@@ -35,11 +36,7 @@ namespace Enemy
         }
         public void FixedUpdateMethod()
         {
-            PrepareEnemyCash();
-            for (int i = 0, count = cache.Count; i < count; i++)
-            {
-                cache[i].FixedUpdateMethod();
-            }
+
         }
 
         private void PrepareEnemyCash()

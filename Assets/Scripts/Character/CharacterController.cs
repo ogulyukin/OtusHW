@@ -1,13 +1,20 @@
 using Core;
 using UnityEngine;
 using UniversalComponents;
+using Zenject;
 
 namespace Character
 {
     public sealed class CharacterController : MonoBehaviour, IOnGameStarted, IOnGameFinished
     {
         [SerializeField] private GameObject character; 
-        [SerializeField] private GameManager gameManager;
+        private GameManager gameManager;
+
+        [Inject]
+        private void Construct(GameManager manager)
+        {
+            gameManager = manager;
+        }
         
         private void Start()
         {
@@ -23,13 +30,13 @@ namespace Character
 
         public void GameStarted()
         {
-            character.GetComponent<HitPointsComponent>().RestoreHitPoints();
-            character.GetComponent<HitPointsComponent>().OnDeath += OnCharacterDeath;
+            //character.GetComponent<HitPointsComponent>().RestoreHitPoints();
+            //character.GetComponent<HitPointsComponent>().OnDeath += OnCharacterDeath;
         }
 
         public void GameFinished()
         {
-            character.GetComponent<HitPointsComponent>().OnDeath -= OnCharacterDeath;
+            //character.GetComponent<HitPointsComponent>().OnDeath -= OnCharacterDeath;
         }
     }
 }

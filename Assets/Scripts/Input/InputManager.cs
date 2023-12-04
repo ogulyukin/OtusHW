@@ -1,6 +1,6 @@
 using System;
-using Core;
 using UnityEngine;
+using Zenject;
 
 namespace Input
 {
@@ -11,11 +11,11 @@ namespace Input
         Stop,
         Fire
     }
-    public sealed class InputManager : MonoBehaviour, IOnUpdate
+    public sealed class InputManager : MonoBehaviour, ITickable
     {
         public Action<UserCommands> OnUserCommand;
 
-        public void UpdateMethod()
+        public void Tick()
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
             {

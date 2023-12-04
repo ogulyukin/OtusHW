@@ -13,7 +13,7 @@ namespace Enemy
 
         public void GameStarted()
         {
-            enemySpawnManager.StartSpawn();
+            //enemySpawnManager.StartSpawn();
         }
 
         public void GameFinished()

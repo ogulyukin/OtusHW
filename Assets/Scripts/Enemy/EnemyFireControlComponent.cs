@@ -14,7 +14,7 @@ namespace Enemy
 
         private void Start()
         {
-            bulletManager = FindObjectOfType<BulletManager>();
+            //bulletManager = FindObjectOfType<BulletManager>();
         }
 
         private void OnEnable()

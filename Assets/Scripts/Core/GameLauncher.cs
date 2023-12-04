@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UI;
 using UnityEngine;
+using Zenject;
 
 namespace Core
 {
@@ -12,11 +13,18 @@ namespace Core
         [SerializeField] private GameObject pauseButton;
         [SerializeField] private TextSpawner startTextSpawn;
         [SerializeField] private GameObject character;
-        [SerializeField] private GameManager gameManager;
+        private GameManager gameManager;
         [SerializeField] private List<string> startText;
         private const float StartTextSpawnTimeout = 1f;
         private bool isBusy;
-        
+
+
+        [Inject]
+        private void Construct(GameManager gManager)
+        {
+            Debug.Log("GameLauncher ready!");
+            gameManager = gManager;
+        }
         public async Task LaunchGame()
         {
             mainMenuPanel.SetActive(false);

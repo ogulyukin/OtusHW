@@ -3,20 +3,23 @@ using UnityEngine;
 
 namespace Bullets
 {
-    public sealed class BulletPool : MonoBehaviour
+    public sealed class BulletPool
     {
-        [SerializeField] private int initialCount = 50;
-        [SerializeField] private Transform worldTransform;
-        [SerializeField] private Bullet bulletPrefab;
-        [SerializeField] private Transform container;
+        private readonly Transform initTransform;
+        private readonly Bullet bulletPrefab;
+        private readonly Transform poolStorageTransform;
 
         private readonly Queue<Bullet> bulletPool = new();
-        
-        private void Awake()
+
+        public BulletPool(int initialCount, Transform iTransform, Bullet bPrefab, Transform storageTransform)
         {
+            initTransform = iTransform;
+            poolStorageTransform = storageTransform;
+            bulletPrefab = bPrefab;
+            
             for (var i = 0; i < initialCount; i++)
             {
-                var bullet = Instantiate(bulletPrefab, container);
+                var bullet = Object.Instantiate(bulletPrefab, poolStorageTransform);
                 bulletPool.Enqueue(bullet);
             }
         }
@@ -25,15 +28,15 @@ namespace Bullets
         {
             if (!bulletPool.TryDequeue(out bullet))
             {
-                bullet = Instantiate(bulletPrefab, worldTransform);
+                bullet = Object.Instantiate(bulletPrefab, initTransform);
             }
 
-            bullet.transform.SetParent(worldTransform);
+            bullet.transform.SetParent(initTransform);
         }
 
         public void UnSpawnBullet(Bullet bullet)
         {
-            bullet.transform.SetParent(container);
+            bullet.transform.SetParent(poolStorageTransform);
             bullet.SetVelocity(Vector2.zero);
             bulletPool.Enqueue(bullet);
         }
