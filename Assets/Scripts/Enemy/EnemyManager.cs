@@ -1,32 +1,74 @@
-using System.Collections.Generic;
+using System;
+using Bullets;
 using Core;
 using UnityEngine;
+using UniversalComponents;
+using Zenject;
 
 namespace Enemy
 {
-    public sealed class EnemyManager : MonoBehaviour, IOnGameStarted, IOnGameFinished
+    public sealed class EnemyManager : MonoBehaviour, IDisposable
     {
-        [SerializeField] private EnemyPool enemyPool;
-        [SerializeField] private EnemyUpdateHandler enemyUpdateHandler;
-        [SerializeField] private EnemySpawnManager enemySpawnManager;
+        [Header("Spawn")]
+        [SerializeField] private EnemyPositions enemyPositions;
+        [SerializeField] private Transform spawnPointTransform;
+        
+        [Header("Pool")]
+        [SerializeField] private Transform inactiveEnemyStorageTransform;
 
+        [SerializeField] private GameObject enemyPrefab;
 
-        public void GameStarted()
+        [SerializeField] private int enemyQuantity = 7;
+        [SerializeField] private float spawnTimeout = 1f;
+
+        private EnemySpawner enemySpawner;
+        private EnemyPool enemyPool;
+        private GameManager gameManager;
+        private EnemyUpdater enemyUpdater;
+        private Coroutine spawnerCoroutine;
+        private BulletManager bulletManager;
+        private UnitConfig player;
+
+        [Inject]
+        private void Construct(GameManager gManager, EnemyUpdater updater, BulletManager manager, UnitConfig pl)
         {
-            //enemySpawnManager.StartSpawn();
+            gameManager = gManager;
+            enemyUpdater = updater;
+            bulletManager = manager;
+            player = pl;
+            gameManager.GameStarted += GameStarted;
+            gameManager.GameFinished += GameFinished;
         }
 
-        public void GameFinished()
+        private void Awake()
         {
-            enemySpawnManager.StopSpawn();
-            var enemies = new List<GameObject>();
-            enemies.AddRange(enemyUpdateHandler.ActiveEnemies);
-            for (int i = 0; i < enemyUpdateHandler.ActiveEnemies.Count; i++)
-            {
-                enemySpawnManager.EnemyInactivation(enemies[i]);
-                enemyPool.UnSpawnEnemy(enemies[i]);
-            }
-            enemyUpdateHandler.ResetHandler();
+            enemyPool = new EnemyPool(enemyPositions, spawnPointTransform, inactiveEnemyStorageTransform, enemyPrefab, enemyQuantity , bulletManager, player);
+            enemySpawner = new EnemySpawner(spawnTimeout, enemyPool);
+            enemyUpdater.InitEnemyUpdater(enemySpawner);
         }
+
+
+        private void GameStarted()
+        {
+            enemySpawner.SetActivenessFlag(true);
+            spawnerCoroutine = StartCoroutine(enemySpawner.SpawnEnemy());
+            enemyUpdater.IsActive = true;
+        }
+
+        private void GameFinished()
+        {
+            enemySpawner.SetActivenessFlag(false);
+            enemyUpdater.IsActive = false;
+            StopCoroutine(spawnerCoroutine);
+            enemySpawner.ResetEnemies();
+        }
+        
+
+        public void Dispose()
+        {
+            gameManager.GameStarted -= GameStarted;
+            gameManager.GameFinished -= GameFinished;
+        }
+        
     }
 }

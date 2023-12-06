@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Level
 {
-    public sealed class LevelBackground : MonoBehaviour, IFixedTickable, IInitializable, IDisposable
+    public sealed class LevelBackground : MonoBehaviour, IFixedTickable, IDisposable
     {
 
         [SerializeField] public float startPositionY;
@@ -20,6 +20,8 @@ namespace Level
         private void Construct(GameManager gManager)
         {
             gameManager = gManager;
+            gameManager.GameStarted += GameStarted;
+            gameManager.GameFinished += GameFinished;
         }
 
         private void Start()
@@ -46,12 +48,6 @@ namespace Level
             }
 
             transform.position -= new Vector3(position.x, movingSpeedY * Time.fixedDeltaTime, position.z);
-        }
-
-        public void Initialize()
-        {
-            gameManager.GameStarted += GameStarted;
-            gameManager.GameFinished += GameFinished;
         }
 
         public void Dispose()

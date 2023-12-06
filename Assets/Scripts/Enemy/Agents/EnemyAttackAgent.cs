@@ -3,20 +3,31 @@ using UnityEngine;
 
 namespace Enemy.Agents
 {
-    public sealed class EnemyAttackAgent : MonoBehaviour
+    public sealed class EnemyAttackAgent
     {
-        [SerializeField] private float fireTimeout = 3;
-        [SerializeField] private EnemyMoveAgent moveAgent;
-        public Action<GameObject> OnFire;
+        public Action OnFire;
         private float currentTime;
+        private readonly float fireTimeout;
+        private bool readyToFire;
+        
+
+        public EnemyAttackAgent(float timeout)
+        {
+            fireTimeout = timeout;
+        }
+
+        public void SetReadyToFire(bool flag)
+        {
+            readyToFire = flag;
+        }
 
         public void TryAttack()
         {
-            if(!moveAgent.IsReached) return;
+            if(!readyToFire) return;
             currentTime -= Time.fixedDeltaTime;
             if (currentTime <= 0)
             {
-                OnFire?.Invoke(gameObject);
+                OnFire?.Invoke();
                 currentTime += fireTimeout;
             }
         }

@@ -22,7 +22,6 @@ namespace Core
         [Inject]
         private void Construct(GameManager gManager)
         {
-            Debug.Log("GameLauncher ready!");
             gameManager = gManager;
         }
         public async Task LaunchGame()

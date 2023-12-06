@@ -1,23 +1,16 @@
-using Core;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class PauseButtonHandler : MonoBehaviour, IOnGameFinished, IOnGameStarted
+    public sealed class PauseButtonHandler : MonoBehaviour
     {
-        private void Start()
-        {
-            gameObject.SetActive(false);
-        }
+        [SerializeField] private Button pauseButton;
 
-        public void GameFinished()
+        public void AddPauseButtonListener(UnityAction action)
         {
-            gameObject.SetActive(false);
-        }
-
-        public void GameStarted()
-        {
-            gameObject.SetActive(true);
+            pauseButton.onClick.AddListener(action);
         }
     }
 }

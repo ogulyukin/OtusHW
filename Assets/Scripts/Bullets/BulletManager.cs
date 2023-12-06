@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Character;
 using Core;
 using Level;
 using UnityEngine;
@@ -9,7 +8,7 @@ using Zenject;
 
 namespace Bullets
 {
-    public sealed class BulletManager : IFixedTickable, IInitializable, IDisposable
+    public sealed class BulletManager : IFixedTickable, IDisposable
     {
         private readonly BulletPool bulletPool;
         private readonly HashSet<Bullet> activeBullets = new();
@@ -22,16 +21,17 @@ namespace Bullets
             bulletPool = new BulletPool(config.InitialCount, config.InitTransform, config.BulletPrefab, config.PoolStorageTransform);
             levelBounds = config.LevelBounds;
             gameManager = gManager;
+            gameManager.GameFinished += GameFinished;
         }
 
         public void CreateBullet(bool isPlayer, GameObject shooter)
         {
             bulletPool.TrySpawnBullet(out var bullet);
 
-            var weapon = shooter.GetComponent<CharacterConfig>();
-            var destination = shooter.GetComponent<IFireControl>().GetFireDirection();
+            var unitConfig = shooter.GetComponent<UnitConfig>();
+            var destination = shooter.GetComponent<CustomComponentsController>().GetFireConfig.GetFireDirection();
             
-            weapon.BulletConfig.InitBullet(bullet, weapon.FirePoint.position, destination);
+            unitConfig.BulletConfig.InitBullet(bullet, unitConfig.FirePoint.position, destination);
             bullet.IsPlayer = isPlayer;
             AddBulletToUpdate(bullet);
         }
@@ -84,11 +84,7 @@ namespace Bullets
                 RemoveBullet(cache[i]);
             }
         }
-
-        public void Initialize()
-        {
-            gameManager.GameFinished += GameFinished;
-        }
+        
 
         public void Dispose()
         {

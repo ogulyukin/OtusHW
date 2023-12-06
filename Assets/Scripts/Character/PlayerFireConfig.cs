@@ -3,7 +3,7 @@ using UniversalComponents;
 
 namespace Character
 {
-    public class PlayerFireConfig : MonoBehaviour, IFireControl
+    public sealed class PlayerFireConfig : IFireConfig
     {
         public Vector2 GetFireDirection()
         {

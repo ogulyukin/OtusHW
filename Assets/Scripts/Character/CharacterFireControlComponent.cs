@@ -1,5 +1,6 @@
 using Bullets;
 using UnityEngine;
+using UniversalComponents;
 
 namespace Character
 {
@@ -8,10 +9,10 @@ namespace Character
         private readonly BulletManager bulletManager;
         private readonly GameObject gameObject;
 
-        public CharacterFireControlComponent(CharacterConfig character, BulletManager manager)
+        public CharacterFireControlComponent(UnitConfig unit, BulletManager manager)
         {
             bulletManager = manager;
-            gameObject = character.gameObject;
+            gameObject = unit.gameObject;
         }
         
         public void FireBullet()

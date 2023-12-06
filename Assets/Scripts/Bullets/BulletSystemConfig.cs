@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Bullets
 {
-    public class BulletSystemConfig : MonoBehaviour
+    public sealed class BulletSystemConfig : MonoBehaviour
     {
         [SerializeField] private int initialCount = 50;
         [SerializeField] private Transform initTransform;

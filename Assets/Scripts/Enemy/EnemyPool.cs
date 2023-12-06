@@ -1,30 +1,32 @@
 using System.Collections.Generic;
-using Enemy.Agents;
+using Bullets;
 using UnityEngine;
+using UniversalComponents;
 
 namespace Enemy
 {
-    public sealed class EnemyPool : MonoBehaviour
+    public sealed class EnemyPool
     {
-        [Header("Spawn")]
-        [SerializeField] private EnemyPositions enemyPositions;
-
-        [SerializeField] private GameObject character;
-
-        [SerializeField] private Transform spawnPointTransform;
-
-        [Header("Pool")]
-        [SerializeField] private Transform container;
-
-        [SerializeField] private GameObject enemyPrefab;
-
-        [SerializeField] private int enemyQuantity = 7;
+        private readonly EnemyPositions enemyAttackPositions;
+        private readonly Transform spawnPoint;
+        private readonly Transform storageTransform;
+        private readonly GameObject enemyPrefab;
+        private readonly int enemyQuantity;
+        private readonly BulletManager bulletManager;
+        private readonly UnitConfig player;
         
 
         private readonly Queue<GameObject> enemyPool = new();
 
-        private void Awake()
+        public EnemyPool(EnemyPositions attackPositions, Transform init, Transform storage, GameObject prefab, int quantity, BulletManager manager, UnitConfig pl)
         {
+            enemyAttackPositions = attackPositions;
+            spawnPoint = init;
+            storageTransform = storage;
+            enemyPrefab = prefab;
+            enemyQuantity = quantity;
+            bulletManager = manager;
+            player = pl;
             EnemyPoolGeneration();
         }
 
@@ -36,21 +38,23 @@ namespace Enemy
                 return false;
             }
 
-            enemy.transform.SetParent(spawnPointTransform);
+            enemy.transform.SetParent(spawnPoint);
 
-            var spawnPosition = enemyPositions.RandomSpawnPosition();
+            var spawnPosition = enemyAttackPositions.RandomSpawnPosition();
             enemy.transform.position = spawnPosition.position;
             
-            var attackPosition = enemyPositions.RandomAttackPosition();
-            var enemyMoveAgent = enemy.GetComponent<EnemyMoveAgent>();
-            enemyMoveAgent.SetDestination(attackPosition.position);
-            enemy.GetComponent<EnemyFireControlComponent>().SetTarget(character);
+            var attackPosition = enemyAttackPositions.RandomAttackPosition();
+            var enemyComponentController = enemy.GetComponent<EnemyComponentsController>();
+            var enemyAgent = enemyComponentController.EnemyAgentSystem();
+            enemyAgent.SetupAgent(bulletManager, attackPosition.position, true);
+            enemyComponentController.SetupEnemyFireConfig(player.gameObject.transform);
             return true;
         }
 
         public void UnSpawnEnemy(GameObject enemy)
         {
-            enemy.transform.SetParent(container);
+            enemy.transform.SetParent(storageTransform);
+            enemy.GetComponent<EnemyComponentsController>().EnemyAgentSystem().SetMoveAgentActiveness(false);
             enemyPool.Enqueue(enemy);
         }
 
@@ -58,10 +62,9 @@ namespace Enemy
         {
             for (var i = 0; i < enemyQuantity; i++)
             {
-                var enemy = Instantiate(enemyPrefab, container);
+                var enemy = Object.Instantiate(enemyPrefab, storageTransform);
                 enemyPool.Enqueue(enemy);
             }
         }
-        
     }
 }

@@ -11,7 +11,7 @@ namespace Input
         Stop,
         Fire
     }
-    public sealed class InputManager : MonoBehaviour, ITickable
+    public sealed class InputManager : ITickable
     {
         public Action<UserCommands> OnUserCommand;
 

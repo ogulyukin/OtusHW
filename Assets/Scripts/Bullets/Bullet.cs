@@ -43,14 +43,14 @@ namespace Bullets
 
         private void DealDamage(GameObject other)
         {
-            if (!other.TryGetComponent(out TeamComponent team) || IsPlayer == team.IsPlayer)
+            if (!other.TryGetComponent(out UnitConfig unitConfig) || IsPlayer == unitConfig.IsPlayer)
             {
                 return;
             }
 
-            if (other.TryGetComponent(out HitPointsComponent hitPoints))
+            if (other.TryGetComponent(out CustomComponentsController customComponentsController))
             {
-                hitPoints.TakeDamage(Damage);
+                customComponentsController.HitPointComponent.TakeDamage(Damage);
             }
         }
     }

@@ -1,18 +1,22 @@
-using Core;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class MainMenuHandler : MonoBehaviour, IOnGameStarted, IOnGameFinished
+    public sealed class MainMenuHandler : MonoBehaviour
     {
-        public void GameStarted()
-        {
-            gameObject.SetActive(false);
-        }
+        [SerializeField] private Button startButton;
+        [SerializeField] private Button exitButton;
 
-        public void GameFinished()
+        public void AddStartButtonListener(UnityAction action)
         {
-            gameObject.SetActive(true);
+            startButton.onClick.AddListener(action);
+        }
+        
+        public void AddExitButtonListener(UnityAction action)
+        {
+            exitButton.onClick.AddListener(action);
         }
     }
 }

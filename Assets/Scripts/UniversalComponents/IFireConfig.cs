@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace UniversalComponents
 {
-    public interface IFireControl
-    {
+    public interface IFireConfig
+    { 
         public Vector2 GetFireDirection();
     }
 }

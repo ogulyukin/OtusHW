@@ -7,16 +7,7 @@ namespace Core
     {
         public Action GameStarted;
         public Action GameFinished;
-        public bool IsGamePaused { get; set; }
-        public GameManager()
-        {
-            Debug.Log("GameManager created");
-        }
-
-        ~GameManager()
-        {
-            Debug.Log("GameManager destroyed");    
-        }
+        private bool isGamePaused;
 
         public void StartGame()
         {
@@ -26,12 +17,13 @@ namespace Core
         public void FinishGame()
         {
             GameFinished?.Invoke();
+            Debug.Log("Game Over!");
         }
 
         public void PauseGame()
         {
-            Time.timeScale = IsGamePaused ? 1 : 0;
-            IsGamePaused = !IsGamePaused;
+            Time.timeScale = isGamePaused ? 1 : 0;
+            isGamePaused = !isGamePaused;
         }
     }
 }
