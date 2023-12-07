@@ -7,19 +7,19 @@ namespace UI
     public sealed class MainMenuController : IDisposable
     {
         private readonly GameManager gameManager;
-        private readonly MainMenuHandler mainMenuHandler;
+        private readonly MainMenuView mainMenuView;
         private readonly GameLauncher gameLauncher;
         
-        private MainMenuController(GameManager manager, MainMenuHandler handler, GameLauncher launcher)
+        private MainMenuController(GameManager manager, MainMenuView view, GameLauncher launcher)
         {
             gameManager = manager;
             gameLauncher = launcher;
             gameManager.GameStarted += GameStarted;
             gameManager.GameFinished += GameFinished;
-            mainMenuHandler = handler;
-            mainMenuHandler.AddStartButtonListener(StartGame);
-            mainMenuHandler.AddExitButtonListener(ExitGame);
-            mainMenuHandler.gameObject.SetActive(true);
+            mainMenuView = view;
+            mainMenuView.AddStartButtonListener(StartGame);
+            mainMenuView.AddExitButtonListener(ExitGame);
+            mainMenuView.gameObject.SetActive(true);
         }
 
         private void StartGame()
@@ -34,12 +34,12 @@ namespace UI
 
         private void GameStarted()
         {
-            mainMenuHandler.gameObject.SetActive(false);
+            mainMenuView.gameObject.SetActive(false);
         }
 
         private void GameFinished()
         {
-            mainMenuHandler.gameObject.SetActive(true);
+            mainMenuView.gameObject.SetActive(true);
         }
         
 
@@ -47,6 +47,8 @@ namespace UI
         {
             gameManager.GameStarted -= GameStarted;
             gameManager.GameFinished -= GameFinished;
+            mainMenuView.RemoveStartButtonListener(StartGame);
+            mainMenuView.RemoveExitButtonListener(ExitGame);
         }
     }
 }

@@ -5,6 +5,7 @@ using Input;
 using Level;
 using UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UniversalComponents;
 using Zenject;
 
@@ -16,8 +17,8 @@ namespace Core
         [SerializeField] private BulletSystemConfig bulletSystemConfig;
         [SerializeField] private LevelBackground levelBackground;
         [SerializeField] private EnemyManager enemyManager;
-        [SerializeField] private MainMenuHandler mainMenuHandler;
-        [SerializeField] private PauseButtonHandler pauseButtonHandler;
+        [FormerlySerializedAs("mainMenuHandler")] [SerializeField] private MainMenuView mainMenuView;
+        [FormerlySerializedAs("pauseButtonHandler")] [SerializeField] private PauseButtonView pauseButtonView;
         [SerializeField] private GameLauncher gameLauncher;
         public override void InstallBindings()
         {
@@ -48,9 +49,9 @@ namespace Core
 
         private void UIBinding()
         {
-            Container.BindInterfacesAndSelfTo<MainMenuHandler>().FromInstance(mainMenuHandler).AsSingle();
+            Container.BindInterfacesAndSelfTo<MainMenuView>().FromInstance(mainMenuView).AsSingle();
             Container.BindInterfacesAndSelfTo<MainMenuController>().AsSingle();
-            Container.BindInterfacesAndSelfTo<PauseButtonHandler>().FromInstance(pauseButtonHandler).AsSingle();
+            Container.BindInterfacesAndSelfTo<PauseButtonView>().FromInstance(pauseButtonView).AsSingle();
             Container.BindInterfacesAndSelfTo<PauseButtonController>().AsSingle();
         }
     }

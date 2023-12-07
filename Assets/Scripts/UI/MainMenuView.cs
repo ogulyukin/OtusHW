@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class MainMenuHandler : MonoBehaviour
+    public sealed class MainMenuView : MonoBehaviour
     {
         [SerializeField] private Button startButton;
         [SerializeField] private Button exitButton;
@@ -17,6 +17,16 @@ namespace UI
         public void AddExitButtonListener(UnityAction action)
         {
             exitButton.onClick.AddListener(action);
+        }
+
+        public void RemoveStartButtonListener(UnityAction action)
+        {
+            startButton.onClick.RemoveListener(action);
+        }
+        
+        public void RemoveExitButtonListener(UnityAction action)
+        {
+            exitButton.onClick.RemoveListener(action);
         }
     }
 }

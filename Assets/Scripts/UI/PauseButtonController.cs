@@ -6,16 +6,16 @@ namespace UI
     public sealed class PauseButtonController : IDisposable
     {
         private readonly GameManager gameManager;
-        private readonly PauseButtonHandler pauseButtonHandler;
+        private readonly PauseButtonView pauseButtonView;
         
-        private PauseButtonController(GameManager manager, PauseButtonHandler handler)
+        private PauseButtonController(GameManager manager, PauseButtonView view)
         {
             gameManager = manager;
             gameManager.GameStarted += GameStarted;
             gameManager.GameFinished += GameFinished;
-            pauseButtonHandler = handler;
-            pauseButtonHandler.AddPauseButtonListener(OnClickPauseButton);
-            pauseButtonHandler.gameObject.SetActive(false);
+            pauseButtonView = view;
+            pauseButtonView.AddPauseButtonListener(OnClickPauseButton);
+            pauseButtonView.gameObject.SetActive(false);
         }
 
         private void OnClickPauseButton()
@@ -25,12 +25,12 @@ namespace UI
 
         private void GameFinished()
         {
-            pauseButtonHandler.gameObject.SetActive(false);
+            pauseButtonView.gameObject.SetActive(false);
         }
 
         private void GameStarted()
         {
-            pauseButtonHandler.gameObject.SetActive(true);
+            pauseButtonView.gameObject.SetActive(true);
         }
         
 
@@ -38,6 +38,7 @@ namespace UI
         {
             gameManager.GameStarted -= GameStarted;
             gameManager.GameFinished -= GameFinished;
+            pauseButtonView.RemovePauseButtonListener(OnClickPauseButton);
         }
     }
 }

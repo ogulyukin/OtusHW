@@ -4,13 +4,18 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class PauseButtonHandler : MonoBehaviour
+    public sealed class PauseButtonView : MonoBehaviour
     {
         [SerializeField] private Button pauseButton;
 
         public void AddPauseButtonListener(UnityAction action)
         {
             pauseButton.onClick.AddListener(action);
+        }
+        
+        public void RemovePauseButtonListener(UnityAction action)
+        {
+            pauseButton.onClick.RemoveListener(action);
         }
     }
 }
