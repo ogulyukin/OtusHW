@@ -1,6 +1,6 @@
 using Zenject;
 
-namespace Enemy
+namespace Enemy.Manager
 {
     public sealed class EnemyUpdater : IFixedTickable
     {

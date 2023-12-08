@@ -1,12 +1,18 @@
 using UnityEngine;
 
-namespace Enemy
+namespace Enemy.Manager
 {
-    public sealed class EnemyPositions : MonoBehaviour
+    public sealed class EnemyPositions
     {
-        [SerializeField] private Transform[] spawnPositions;
+        private readonly Transform[] spawnPositions;
 
-        [SerializeField] private Transform[] attackPositions;
+        private readonly Transform[] attackPositions;
+
+        public EnemyPositions(Transform[] spawns, Transform[] attacks)
+        {
+            spawnPositions = spawns;
+            attackPositions = attacks;
+        }
 
         public Transform RandomSpawnPosition()
         {

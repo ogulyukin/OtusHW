@@ -1,9 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UniversalComponents;
 
-namespace Enemy
+namespace Enemy.Manager
 {
     public sealed class EnemySpawner
     {
@@ -23,17 +24,23 @@ namespace Enemy
             isGameStarted = flag;
         }
 
-        public IEnumerator SpawnEnemy()
+        public async Task SpawnEnemy(CancellationToken token)
         {
             while (isGameStarted)
             {
-                yield return new WaitForSeconds(spawnTimeout);
+                await Task.Delay((int)spawnTimeout * 1000, token);
                 if (enemyPool.TrySpawnEnemy(out var enemy))
                 {
                     var enemyHitPointsComponent = enemy.GetComponent<CustomComponentsController>().HitPointComponent;
                     enemyHitPointsComponent.OnDeath += OnDestroyed;
                     enemyHitPointsComponent.RestoreHitPoints();
                     activeEnemies.Add(enemy);
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    Debug.Log("Task Cancelled");
+                    return;    
                 }
             }
         }

@@ -1,11 +1,10 @@
 using Bullets;
 using Character;
-using Enemy;
+using Enemy.Manager;
 using Input;
 using Level;
 using UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UniversalComponents;
 using Zenject;
 
@@ -15,22 +14,38 @@ namespace Core
     {
         [SerializeField] private UnitConfig player;
         [SerializeField] private BulletSystemConfig bulletSystemConfig;
-        [SerializeField] private LevelBackground levelBackground;
-        [SerializeField] private EnemyManager enemyManager;
-        [FormerlySerializedAs("mainMenuHandler")] [SerializeField] private MainMenuView mainMenuView;
-        [FormerlySerializedAs("pauseButtonHandler")] [SerializeField] private PauseButtonView pauseButtonView;
+        [SerializeField] private LevelBackgroundConfig levelBackgroundConfig;
+        [SerializeField] private EnemyManagerConfig enemyManagerConfig;
+        [SerializeField] private MainMenuView mainMenuView;
+        [SerializeField] private PauseButtonView pauseButtonView;
         [SerializeField] private GameLauncher gameLauncher;
         public override void InstallBindings()
         {
-            Container.Bind<GameLauncher>().FromInstance(gameLauncher).AsSingle();
-            Container.Bind<GameManager>().AsSingle();
-            Container.Bind<BulletSystemConfig>().FromInstance(bulletSystemConfig).AsSingle();
-            Container.BindInterfacesAndSelfTo<BulletManager>().AsSingle();
-            Container.BindInterfacesAndSelfTo<InputManager>().AsSingle();
-            Container.BindInterfacesTo<LevelBackground>().FromInstance(levelBackground).AsSingle();
+            CoreBinding();
+            BulletSystemBinding();
+            BackgroundBinding();
             BindPlayer();
             EnemyBindings();
             UIBinding();
+        }
+
+        private void CoreBinding()
+        {
+            Container.Bind<GameLauncher>().FromInstance(gameLauncher).AsSingle();
+            Container.Bind<GameManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<InputManager>().AsSingle();
+        }
+
+        private void BulletSystemBinding()
+        {
+            Container.Bind<BulletSystemConfig>().FromInstance(bulletSystemConfig).AsSingle();
+            Container.BindInterfacesAndSelfTo<BulletManager>().AsSingle();
+        }
+
+        private void BackgroundBinding()
+        {
+            Container.Bind<LevelBackgroundConfig>().FromInstance(levelBackgroundConfig).AsSingle();
+            Container.BindInterfacesAndSelfTo<LevelBackground>().AsSingle();
         }
 
         private void BindPlayer()
@@ -43,7 +58,8 @@ namespace Core
 
         private void EnemyBindings()
         {
-            Container.BindInterfacesAndSelfTo<EnemyManager>().FromInstance(enemyManager).AsSingle();
+            Container.Bind<EnemyManagerConfig>().FromInstance(enemyManagerConfig).AsSingle();
+            Container.BindInterfacesAndSelfTo<EnemyManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<EnemyUpdater>().AsSingle();
         }
 

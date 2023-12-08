@@ -5,49 +5,49 @@ using Zenject;
 
 namespace Level
 {
-    public sealed class LevelBackground : MonoBehaviour, IFixedTickable, IDisposable
+    public sealed class LevelBackground : IFixedTickable, IDisposable
     {
 
-        [SerializeField] public float startPositionY;
+        private readonly float startPositionY;
 
-        [SerializeField] public float endPositionY;
+        private readonly float endPositionY;
 
-        [SerializeField] public float movingSpeedY;
+        private readonly float movingSpeedY;
 
-        private GameManager gameManager;
+        private readonly GameManager gameManager;
 
-        [Inject]
-        private void Construct(GameManager gManager)
+        private readonly LevelBackgroundConfig levelBackgroundConfig;
+        private LevelBackground(GameManager gManager, LevelBackgroundConfig config)
         {
+            levelBackgroundConfig = config;
+            startPositionY = config.startPositionY;
+            endPositionY = config.endPositionY;
+            movingSpeedY = config.movingSpeedY;
+            levelBackgroundConfig.gameObject.SetActive(false);
             gameManager = gManager;
             gameManager.GameStarted += GameStarted;
             gameManager.GameFinished += GameFinished;
         }
 
-        private void Start()
+        private void GameStarted()
         {
-            gameObject.SetActive(false);
+            levelBackgroundConfig.gameObject.SetActive(true);
         }
 
-        public void GameStarted()
+        private void GameFinished()
         {
-            gameObject.SetActive(true);
-        }
-
-        public void GameFinished()
-        {
-            gameObject.SetActive(false);
+            levelBackgroundConfig.gameObject.SetActive(false);
         }
 
         public void FixedTick()
         {
-            var position = transform.position;
+            var position = levelBackgroundConfig.transform.position;
             if (position.y <= endPositionY)
             {
-                transform.position = new Vector3(position.x, startPositionY, position.z);
+                levelBackgroundConfig.transform.position = new Vector3(position.x, startPositionY, position.z);
             }
 
-            transform.position -= new Vector3(position.x, movingSpeedY * Time.fixedDeltaTime, position.z);
+            levelBackgroundConfig.transform.position -= new Vector3(position.x, movingSpeedY * Time.fixedDeltaTime, position.z);
         }
 
         public void Dispose()

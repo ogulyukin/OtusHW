@@ -3,7 +3,7 @@ using Bullets;
 using UnityEngine;
 using UniversalComponents;
 
-namespace Enemy
+namespace Enemy.Manager
 {
     public sealed class EnemyPool
     {
@@ -18,13 +18,13 @@ namespace Enemy
 
         private readonly Queue<GameObject> enemyPool = new();
 
-        public EnemyPool(EnemyPositions attackPositions, Transform init, Transform storage, GameObject prefab, int quantity, BulletManager manager, UnitConfig pl)
+        public EnemyPool(EnemyManagerConfig config, BulletManager manager, UnitConfig pl)
         {
-            enemyAttackPositions = attackPositions;
-            spawnPoint = init;
-            storageTransform = storage;
-            enemyPrefab = prefab;
-            enemyQuantity = quantity;
+            enemyAttackPositions = new EnemyPositions(config.SpawnPositions, config.AttackPositions);
+            spawnPoint = config.SpawnPointTransform;
+            storageTransform = config.InactiveEnemyStorageTransform;
+            enemyPrefab = config.EnemyPrefab;
+            enemyQuantity = config.EnemyQuantity;
             bulletManager = manager;
             player = pl;
             EnemyPoolGeneration();
